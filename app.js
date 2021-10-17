@@ -1,18 +1,29 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+import express from 'express';
+import dotenv from 'dotenv';
 
-var indexRouter = require('./routes/index');
+import bodyParser from 'body-parser';
+import cors from 'cors';
 
-var app = express();
+import publicRoutes from './src/routes/api';
+import apiRoutes from './src/routes/api';
+import apiMiddleware from './src/middleware/apiAuth';
+import adminMiddleware from './src/middleware/adminAuth';
+import errorHandler from './src/middleware/errorHandler';
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+dotenv.config();
+require('./src/config/sequelize');
 
-app.use('/', indexRouter);
+const app = express();
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  }),
+);
+
+app.use(cors());
+app.use(bodyParser.json());
+app.use('/api/v1', publicRoutes);
+app.use('/api/v1', apiMiddleware, apiRoutes);
+app.use(errorHandler);
 
 module.exports = app;
