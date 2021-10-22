@@ -1,20 +1,34 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const dotenv = require("dotenv");
 
-var indexRouter = require('./src/routes/index');
-var usersRouter = require('./src/routes/users');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const path = require('path');
 
-var app = express();
+const masterRoutes = require("./src/routes/v1/master")
+const apiMiddleware = require("./src/middleware/apiAuth");
+const adminMiddleware = require("./src/middleware/adminAuth")
+const errorHandler = require("./src/middleware/errorHandler")
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, './src/public')));
+dotenv.config();
+require('./src/config/sequelize');
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+const app = express();
+app.use(
+    bodyParser.urlencoded({
+        extended: true,
+    }),
+);
+
+app.use(cors());
+app.use(bodyParser.json());
+app.use('/api/v1', masterRoutes)
+app.use(errorHandler)
+
+app.get("/", (req, res) => {
+    res.json({
+        message: "The server has started."
+    });
+});
 
 module.exports = app;
