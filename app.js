@@ -6,6 +6,7 @@ const cors = require('cors');
 const path = require('path');
 
 const masterRoutes = require("./src/routes/v1/master")
+const publicRoutes = require("./src/routes/v1/api")
 const apiMiddleware = require("./src/middleware/apiAuth");
 const adminMiddleware = require("./src/middleware/adminAuth")
 const errorHandler = require("./src/middleware/errorHandler")
@@ -22,7 +23,8 @@ app.use(
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use('/api/v1', masterRoutes)
+app.use('/api/v1', publicRoutes)
+app.use('/api/v1', apiMiddleware, adminMiddleware, masterRoutes)
 app.use(errorHandler)
 
 app.get("/", (req, res) => {
