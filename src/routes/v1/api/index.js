@@ -9,7 +9,7 @@ const masterValidator = require('../../../controllers/v1/master/validator/master
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+  res.send('masuk');
 });
 
 // Auth middleware that checks if the user is logged in
