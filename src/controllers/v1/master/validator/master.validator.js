@@ -12,3 +12,10 @@ module.exports = {
     login,
     register
 }
+
+// firstname
+// lastname
+// email
+// password
+// phone
+// role
