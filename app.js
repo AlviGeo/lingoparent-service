@@ -17,7 +17,7 @@ require('./src/config/sequelize');
 const app = express();
 app.use(
     bodyParser.urlencoded({
-        extended: true,
+        extended: false,
     }),
 );
 
@@ -28,10 +28,12 @@ app.use('/api/v1', publicRoutes)
 app.use('/api/v1', apiMiddleware, adminMiddleware, masterRoutes)
 app.use(errorHandler)
 
-app.get("/", (req, res) => {
-    res.json({
-        message: "The server has started."
-    });
+app.listen(5000, function() {
+   app.get("/", (req, res) => {
+    res.json({ message: "The server has started." });
 });
+})
+
+
 
 module.exports = app;

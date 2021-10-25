@@ -5,7 +5,7 @@ const {
 } = require("../../../helpers")
 const jwt = require("jsonwebtoken");
 
-// //
+// // => bcyrpt belom
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const myPlaintextPassword = 's0/\/\P4$$w0rD';
@@ -26,75 +26,76 @@ const sendMail = require("./sendEmail");
 const passport = require('passport');
 require("../../../config/passport");
 
+// Register => hash belom
 const register = async (req, res) => {
     try {
-        // const {
-        //     email,
-        //     password
-        // } = req.body
+        const {
+            email,
+            password //belom fix
+        } = req.body
 
-        // if (process.env.IS_GOOGLE_AUTH_ENABLE === 'true') {
-        //     if (!req.body.code) {
-        //       throw new Error('code must be defined');
-        //     }
-        //     const {
-        //       code
-        //     } = req.body;
-        //     const customUrl = `${process.env.GOOGLE_CAPTCHA_URL}?secret=${process.env.GOOGLE_CAPTCHA_SECRET_SERVER}&response=${code}`;
-        //     const response = await axios({
-        //       method: 'post',
-        //       url: customUrl,
-        //       data: {
-        //         secret: process.env.GOOGLE_CAPTCHA_SECRET_SERVER,
-        //         response: code,
-        //       },
-        //       config: {
-        //         headers: {
-        //           'Content-Type': 'multipart/form-data',
-        //         },
-        //       },
-        //     });
-        //     if (!(response && response.data && response.data.success === true)) {
-        //       throw new Error('Google captcha is not valid');
-        //     }
-        //   }
+        if (process.env.IS_GOOGLE_AUTH_ENABLE === 'true') {
+            if (!req.body.code) {
+              throw new Error('code must be defined');
+            }
+            const {
+              code
+            } = req.body;
+            const customUrl = `${process.env.GOOGLE_CAPTCHA_URL}?secret=${process.env.GOOGLE_CAPTCHA_SECRET_SERVER}&response=${code}`;
+            const response = await axios({
+              method: 'post',
+              url: customUrl,
+              data: {
+                secret: process.env.GOOGLE_CAPTCHA_SECRET_SERVER,
+                response: code,
+              },
+              config: {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                },
+              },
+            });
+            if (!(response && response.data && response.data.success === true)) {
+              throw new Error('Google captcha is not valid');
+            }
+          }
 
-        //   const user = await User.findOne({
-        //       where: {
-        //           email
-        //       },
-        //   });
-        //   if (user) {
-        //     throw new Error('User already exists with same email');
-        //   } 
+          const user = await User.findOne({
+              where: {
+                  email
+              },
+          });
+          if (user) {
+            throw new Error('User already exists with same email');
+          } 
 
-        //   bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
-        //     // Store hash in your password DB.
-        // });
-        //   const token = jwt.sign({
-        //     user: {
-        //       email: req.body.email,
-        //       password: req.body.passport
-        //     },
-        //   },
-        //   process.env.SECRET,
-        // );
+          bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
+            // Store hash in your password DB.
+        });
+          const token = jwt.sign({
+            user: {
+              email: req.body.email,
+              password: req.body.passport
+            },
+          },
+          process.env.SECRET,
+        );
     
-        // const payload = {
-        //   email,
-        //   password: reqPass,
-        //   isVerified: false,
-        //   verifiedToken: token,
-        // };
+        const payload = {
+          email,
+          password: reqPass,
+          isVerified: false,
+          verifiedToken: token,
+        };
     
-        // await User.create(payload);
+        await User.create(payload);
 
-        // sendMail();
+        sendMail();
 
-        // return successResponse(req, res, {
-        //     register
-        // })
-        return ("tes")
+        return successResponse(req, res, {
+            register
+        })
+        //return ("tes")
     } catch (err) {
         return errorResponse(req, res, {
             err
