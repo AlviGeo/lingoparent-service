@@ -48,6 +48,5 @@ db.Sequelize = Sequelize;
 // db.User.hasMany(db.Address);
 // db.Address.belongsTo(db.User);
 
-db.master_users = require('./v1/master_user')(sequelize, Sequelize);
 
 module.exports = db;

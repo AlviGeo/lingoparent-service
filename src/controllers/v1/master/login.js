@@ -1,4 +1,6 @@
-const { errorResponse, successResponse } = require("../../../helpers")
+const { errorResponse, successResponse } = require("../../../helpers");
+const Validator = require("fastest-validator");
+const v = new Validator();
 
 const login = async (req, res) => {
     try {

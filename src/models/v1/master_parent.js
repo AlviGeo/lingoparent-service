@@ -42,10 +42,12 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     },
     idUser_create: {
-      type: DataTypes.INTEGER
+      type: DataTypes.INTEGER,
+      default: new Date()
     },
     idUser_update: {
-      type: DataTypes.INTEGER
+      type: DataTypes.INTEGER,
+      allowNull: true
     },
   }, {
     sequelize,
