@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
   }, {
-    tableName: 'master_user',
+    tableName: 'master_users',
     timestamps: true
   });
 

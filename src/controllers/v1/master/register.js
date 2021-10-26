@@ -23,14 +23,15 @@ require("../../../config/passport");
 
 const register = async (req, res) => {
   try {
-    // const {
-    //   firstname,
-    //   lastname,
-    //   email,
-    //   password,
-    //   phone,
-    //   role,
-    // } = req.body
+    const {
+      firstname,
+      lastname,
+      email,
+      password,
+      phone,
+      role,
+    } = req.body
+
 
     // if (process.env.IS_GOOGLE_AUTH_ENABLE === 'true') {
     //   if (!req.body.code) {
@@ -57,17 +58,16 @@ const register = async (req, res) => {
     //     throw new Error('Google captcha is not valid');
     //   }
     // }
-
-    // const user = await User.findOne({
-    //   where: {
-    //     firstname,
-    //     lastname,
-    //     email,
-    //     password,
-    //     phone,
-    //     role,
-    //   },
+    // return res.status(404).json({
+    //   status: 'ok',
+    //   data: firstname
     // });
+
+    const user = await User.findOne({
+      where: {
+        email: req.body.email
+      },
+    });
     // if (user) {
     //   throw new Error('User already exists with same email');
     // } else if (email) {
@@ -75,8 +75,14 @@ const register = async (req, res) => {
     // } else if (phone) {
     //   throw new Error('User already exists with same phone number');
     // }
+    if(user){
+      return res.status(409).json({
+          status: 'error',
+          message: 'email already exist'
+      });
+  }
 
-    // const passHash = await bcrypt.hash(req.body.password, 10);
+    const passHash = await bcrypt.hash(req.body.password, 10);
 
     // const token = jwt.sign({
     //     user: {
@@ -87,19 +93,18 @@ const register = async (req, res) => {
     //   process.env.SECRET,
     // );
 
-    // const data = {
-    //   firstname,
-    //   lastname,
-    //   email,
-    //   password: passHash,
-    //   phone,
-    //   role
-    // };
+    const data = {
+      // firstname,
+      // lastname,
+      email: req.body.email,
+      password: passHash,
+      // phone,
+      role: req.body.role
+    };
 
-    // await User.create(data);
+    await User.create(data);
+    return successResponse(req, res, {data});
 
-    // return successResponse(req, res, {data});
-    return "hi";
 
   } catch (err) {
     return errorResponse(req, res, {
