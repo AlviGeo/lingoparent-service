@@ -25,7 +25,7 @@ app.use(
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/api/v1', publicRoutes)
-app.use('/api/v1', apiMiddleware, adminMiddleware, masterRoutes)
+// app.use('/api/v1', apiMiddleware, adminMiddleware, masterRoutes)
 app.use(errorHandler)
 
 app.get("/", (req, res) => {

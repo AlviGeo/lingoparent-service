@@ -1,7 +1,7 @@
 // Response Message //
 const {
-    errorResponse,
-    successResponse
+  errorResponse,
+  successResponse
 } = require("../../../helpers")
 const jwt = require("jsonwebtoken");
 
@@ -17,88 +17,95 @@ const Validator = require("fastest-validator");
 const v = new Validator();
 const validator = require("./validator/master.validator");
 
-// Nodemailer
-const sendMail = require("./sendEmail");
-
 // Passport JS //
 const passport = require('passport');
 require("../../../config/passport");
 
 const register = async (req, res) => {
-    try {
-        const {
-            email,
-            password
-        } = req.body
+  try {
+    // const {
+    //   firstname,
+    //   lastname,
+    //   email,
+    //   password,
+    //   phone,
+    //   role,
+    // } = req.body
 
-        if (process.env.IS_GOOGLE_AUTH_ENABLE === 'true') {
-            if (!req.body.code) {
-              throw new Error('code must be defined');
-            }
-            const {
-              code
-            } = req.body;
-            const customUrl = `${process.env.GOOGLE_CAPTCHA_URL}?secret=${process.env.GOOGLE_CAPTCHA_SECRET_SERVER}&response=${code}`;
-            const response = await axios({
-              method: 'post',
-              url: customUrl,
-              data: {
-                secret: process.env.GOOGLE_CAPTCHA_SECRET_SERVER,
-                response: code,
-              },
-              config: {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                },
-              },
-            });
-            if (!(response && response.data && response.data.success === true)) {
-              throw new Error('Google captcha is not valid');
-            }
-          }
+    // if (process.env.IS_GOOGLE_AUTH_ENABLE === 'true') {
+    //   if (!req.body.code) {
+    //     throw new Error('code must be defined');
+    //   }
+    //   const {
+    //     code
+    //   } = req.body;
+    //   const customUrl = `${process.env.GOOGLE_CAPTCHA_URL}?secret=${process.env.GOOGLE_CAPTCHA_SECRET_SERVER}&response=${code}`;
+    //   const response = await axios({
+    //     method: 'post',
+    //     url: customUrl,
+    //     data: {
+    //       secret: process.env.GOOGLE_CAPTCHA_SECRET_SERVER,
+    //       response: code,
+    //     },
+    //     config: {
+    //       headers: {
+    //         'Content-Type': 'multipart/form-data',
+    //       },
+    //     },
+    //   });
+    //   if (!(response && response.data && response.data.success === true)) {
+    //     throw new Error('Google captcha is not valid');
+    //   }
+    // }
 
-          const user = await User.findOne({
-              where: {
-                  email
-              },
-          });
-          if (user) {
-            throw new Error('User already exists with same email');
-          } 
+    // const user = await User.findOne({
+    //   where: {
+    //     firstname,
+    //     lastname,
+    //     email,
+    //     password,
+    //     phone,
+    //     role,
+    //   },
+    // });
+    // if (user) {
+    //   throw new Error('User already exists with same email');
+    // } else if (email) {
+    //   throw new Error('User already exists with same email!');
+    // } else if (phone) {
+    //   throw new Error('User already exists with same phone number');
+    // }
 
-          const passHash = await bcrypt.hash(req.body.password, 10);
+    // const passHash = await bcrypt.hash(req.body.password, 10);
 
-          const token = jwt.sign({
-            user: {
-              email: req.body.email,
-              password: req.body.passport
-            },
-          },
-          process.env.SECRET,
-        );
-    
-        const payload = {
-          email,
-          password: passHash,
-          isVerified: false,
-          verifiedToken: token,
-        };
-    
-        await User.create(payload);
+    // const token = jwt.sign({
+    //     user: {
+    //       email: req.body.email,
+    //       password: req.body.passport
+    //     },
+    //   },
+    //   process.env.SECRET,
+    // );
 
-        sendMail();
+    // const data = {
+    //   firstname,
+    //   lastname,
+    //   email,
+    //   password: passHash,
+    //   phone,
+    //   role
+    // };
 
-        return successResponse(req, res, {
-          username,
-          email,
-          verifiedToken: token,
-        });
-        
-    } catch (err) {
-        return errorResponse(req, res, {
-            err
-        })
-    }
+    // await User.create(data);
+
+    // return successResponse(req, res, {data});
+    return "hi";
+
+  } catch (err) {
+    return errorResponse(req, res, {
+      err
+    })
+  }
 }
 
 module.exports = register;

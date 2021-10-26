@@ -1,19 +1,7 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-  class master_parent extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  };
-  master_parent.init({
+  const master_parent = sequelize.define('master_parent', {
     id_occupation: {
       type: DataTypes.INTEGER
     },
@@ -50,8 +38,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
   }, {
-    sequelize,
-    modelName: 'master_parent',
+    tableName: 'master_parent',
+    timestamps: true
   });
+
   return master_parent;
 };

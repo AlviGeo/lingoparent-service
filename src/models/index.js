@@ -49,4 +49,6 @@ db.Sequelize = Sequelize;
 // db.Address.belongsTo(db.User);
 
 
+
+
 module.exports = db;

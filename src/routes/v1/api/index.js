@@ -7,7 +7,6 @@ require("../../../config/passport");
 const masterController = require('../../../controllers/v1/master');
 const masterValidator = require('../../../controllers/v1/master/validator/master.validator');
 
-/* GET users listing. */
 router.get('/', function(req, res, next) {
   res.send('masuk');
 });
@@ -30,6 +29,7 @@ router.get('/success', isLoggedIn, (req, res) => res.send(`Welcome mr ${req.user
 router.get('/failed', (req, res) => {
   res.send('something went wrong..')
 })
+
 
 /* POST user login. */
 router.post('/login', masterController.login)

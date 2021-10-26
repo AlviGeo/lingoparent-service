@@ -35,4 +35,14 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+
+db.master_user = require("./master_user.js")(sequelize, Sequelize)
+db.master_student = require("./master_student.js")(sequelize, Sequelize);
+
+db.master_user.hasOne(db.master_student, {
+  as: 'master_user', foreignKey: 'id'});
+  
+db.master_student.belongsTo(db.master_user, {
+  as: 'master_user', foreignKey: 'idUser_create'});
+
 module.exports = db;
