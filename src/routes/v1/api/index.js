@@ -18,7 +18,7 @@ const isLoggedIn = (req, res, next) => {
 }
 
 /* POST user register. */
-router.post('/register', masterController.register);
+router.post('/register', /*masterValidator.register,*/ masterController.register);
 
 router.get('/google', passport.authenticate('google', {scope: ['profile', 'email']}));
 router.get('/google/callback', passport.authenticate('google', { 

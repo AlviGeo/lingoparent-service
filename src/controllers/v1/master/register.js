@@ -51,7 +51,7 @@ const register = async (req, res) => {
               },
               config: {
                 headers: {
-                  'Content-Type': 'multipart/form-data',
+                  'Content-Type': 'application/json',
                 },
               },
             });
