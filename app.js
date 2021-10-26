@@ -25,14 +25,9 @@ app.use(
 app.use(cors());
 app.use(bodyParser.json());
 app.use('/api/v1', publicRoutes)
-app.use('/api/v1', apiMiddleware, adminMiddleware, masterRoutes)
+// app.use('/api/v1', apiMiddleware, adminMiddleware, masterRoutes)
 app.use(errorHandler)
 
-app.listen(3000, function() {
-   app.get("/", (req, res) => {
-    res.json({ message: "The server has started." });
-});
-})
 
 
 

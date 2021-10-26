@@ -3,17 +3,13 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class master_student extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  };
-  master_student.init({
+  const master_student = sequelize.define('master_student', {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+      allowNull: false
+    },
     id_character: {
       type: DataTypes.INTEGER
     },
@@ -54,8 +50,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
   }, {
-    sequelize,
-    modelName: 'master_student',
-  });
+    tableName: 'master_student',
+    timestamps: true
+  })
+
   return master_student;
 };
