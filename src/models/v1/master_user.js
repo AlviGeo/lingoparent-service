@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
-  const master_user = sequelize.define('User', {
+  const master_user = sequelize.define('master_user', {
     id_account: {
       type: DataTypes.STRING
     },
@@ -12,7 +12,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     },
     role: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      defaultValue: 'parent'
     },
     idUser_create: {
       type: DataTypes.INTEGER
@@ -24,6 +25,8 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'master_users',
     timestamps: true
   });
+
+  
 
   return master_user;
 };

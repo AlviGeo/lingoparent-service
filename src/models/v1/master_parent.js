@@ -30,8 +30,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING
     },
     idUser_create: {
-      type: DataTypes.INTEGER,
-      default: new Date()
+      type: DataTypes.INTEGER
     },
     idUser_update: {
       type: DataTypes.INTEGER,

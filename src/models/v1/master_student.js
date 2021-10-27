@@ -54,5 +54,8 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: true
   })
 
+  
+  
+
   return master_student;
 };

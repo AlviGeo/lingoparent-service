@@ -11,6 +11,7 @@ const bcrypt = require("bcrypt");
 // Import model
 const db = require("../../../models/v1")
 const User = db.master_user;
+const Parent = db.master_parent;
 
 // Validator //
 const Validator = require("fastest-validator");
@@ -32,36 +33,6 @@ const register = async (req, res) => {
       role,
     } = req.body
 
-
-    // if (process.env.IS_GOOGLE_AUTH_ENABLE === 'true') {
-    //   if (!req.body.code) {
-    //     throw new Error('code must be defined');
-    //   }
-    //   const {
-    //     code
-    //   } = req.body;
-    //   const customUrl = `${process.env.GOOGLE_CAPTCHA_URL}?secret=${process.env.GOOGLE_CAPTCHA_SECRET_SERVER}&response=${code}`;
-    //   const response = await axios({
-    //     method: 'post',
-    //     url: customUrl,
-    //     data: {
-    //       secret: process.env.GOOGLE_CAPTCHA_SECRET_SERVER,
-    //       response: code,
-    //     },
-    //     config: {
-    //       headers: {
-    //         'Content-Type': 'multipart/form-data',
-    //       },
-    //     },
-    //   });
-    //   if (!(response && response.data && response.data.success === true)) {
-    //     throw new Error('Google captcha is not valid');
-    //   }
-    // }
-    // return res.status(404).json({
-    //   status: 'ok',
-    //   data: firstname
-    // });
 
     const user = await User.findOne({
       where: {
@@ -88,20 +59,20 @@ const register = async (req, res) => {
         email,
         password
       });
-      if(check) {
+      if(!check) {
         return errorResponse(req, res, {check})
       }
       
     const passHash = await bcrypt.hash(req.body.password, 10);
 
-    // const token = jwt.sign({
-    //     user: {
-    //       email: req.body.email,
-    //       password: req.body.passport
-    //     },
-    //   },
-    //   process.env.SECRET,
-    // );
+    const token = jwt.sign({
+        user: {
+          email: req.body.email,
+          password: req.body.passport
+        },
+      },
+      process.env.SECRET,
+    );
 
     const data = {
       // firstname,
@@ -112,9 +83,17 @@ const register = async (req, res) => {
       role: req.body.role
     };
 
-    await User.create(data);
+    User.create(data, {
+      include: [{
+        model: db.Parent,
+        as: 'master_parent',
+        include: [db.fullname, db.lastname, db.phone, db.address, db.gender]
+      }]
+    }).then(function() {
+      return successResponse(req, res, {data});
+    })
+    
     return successResponse(req, res, {data});
-
 
   } catch (err) {
     return errorResponse(req, res, {
