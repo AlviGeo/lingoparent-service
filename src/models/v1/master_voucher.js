@@ -3,17 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class master_voucher extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  };
-  master_voucher.init({
+  const master_voucher = sequelize.define('master_voucher', {
     voucher_code: {
       type: DataTypes.STRING
     },
@@ -45,8 +35,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
   }, {
-    sequelize,
-    modelName: 'master_voucher',
-  });
+    tableName: 'master_vouchers',
+    timestamps: true
+  })
   return master_voucher;
 };

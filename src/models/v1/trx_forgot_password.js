@@ -3,17 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class trx_forgot_password extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  };
-  trx_forgot_password.init({
+  const trx_forgot_password = sequelize.define('trx_forgot_password', {
     id_user: {
       type: DataTypes.INTEGER
     },
@@ -30,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE
     },
   }, {
-    sequelize,
-    modelName: 'trx_forgot_password',
-  });
+    tableName: 'trx_forgot_passwords',
+    timestamps: true
+  })
   return trx_forgot_password;
 };

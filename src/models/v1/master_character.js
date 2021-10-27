@@ -1,19 +1,7 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-  class master_character extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  };
-  master_character.init({
+  const master_character = sequelize.define('master_character', {
     character: {
       type: DataTypes.STRING
     },
@@ -30,8 +18,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     }
   }, {
-    sequelize,
-    modelName: 'master_character',
-  });
+    tableName: 'master_characters',
+    timestamps: true
+  })
   return master_character;
 };

@@ -3,17 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class master_like_dislike extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  };
-  master_like_dislike.init({
+  const master_like_dislike = sequelize.define('master_like_dislike', {
     id_likeable: {
       type: DataTypes.INTEGER
     },
@@ -36,8 +26,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
   }, {
-    sequelize,
-    modelName: 'master_like_dislike',
-  });
+    tableName: 'master_like_dislikes',
+    timestamps: true
+  })
   return master_like_dislike;
 };

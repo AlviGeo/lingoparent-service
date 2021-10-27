@@ -3,17 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class trx_event_order extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  };
-  trx_event_order.init({
+  const trx_event_order = sequelize.define('trx_event_order', {
     id_event: {
       type: DataTypes.INTEGER
     },
@@ -38,9 +28,13 @@ module.exports = (sequelize, DataTypes) => {
     idUser_update: {
       type: DataTypes.INTEGER
     },
+  })
+  trx_event_order.init({
+    
   }, {
     sequelize,
-    modelName: 'trx_event_order',
+    modelName: 'trx_event_orders',
+    timestamps: true
   });
   return trx_event_order;
 };

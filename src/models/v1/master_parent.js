@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: true
     },
   }, {
-    tableName: 'master_parent',
+    tableName: 'master_parents',
     timestamps: true
   });
 

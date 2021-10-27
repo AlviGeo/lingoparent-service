@@ -3,17 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class trx_insight_tag extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  };
-  trx_insight_tag.init({
+  const trx_insight_tag = sequelize.define('trx_insight_tag', {
     id_insight: {
       type: DataTypes.INTEGER
     },
@@ -27,8 +17,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
   }, {
-    sequelize,
-    modelName: 'trx_insight_tag',
-  });
+    tableName: 'trx_insight_tags',
+    timestamps: true
+  })
   return trx_insight_tag;
 };

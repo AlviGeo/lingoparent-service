@@ -1,19 +1,7 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-  class master_comment extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  };
-  master_comment.init({
+  const master_comment = sequelize.define('master_comment', {
     id_commentable: {
       type: DataTypes.INTEGER
     },
@@ -45,8 +33,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
   }, {
-    sequelize,
-    modelName: 'master_comment',
-  });
+    tableName: 'master_comments',
+    timestamps: true
+  })
   return master_comment;
 };

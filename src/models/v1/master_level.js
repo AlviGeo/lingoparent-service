@@ -3,17 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class master_level extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  };
-  master_level.init({
+  const master_level = sequelize.define('master_level', {
     level_name: {
       type: DataTypes.STRING
     },
@@ -27,8 +17,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
   }, {
-    sequelize,
-    modelName: 'master_level',
-  });
+    tableName: 'master_levels',
+    timestamps: true
+  })
   return master_level;
 };

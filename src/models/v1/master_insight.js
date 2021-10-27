@@ -1,19 +1,7 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
-  class master_insight extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  };
-  master_insight.init({
+  const master_insight = sequelize.define('master_insight', {
     cover: {
       type: DataTypes.TEXT
     },
@@ -45,8 +33,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
   }, {
-    sequelize,
-    modelName: 'master_insight',
-  });
+    tableName: 'master_insights',
+    timestamps: true
+  })
   return master_insight;
 };

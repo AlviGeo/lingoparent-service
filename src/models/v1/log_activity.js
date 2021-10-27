@@ -3,17 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class log_activity extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  };
-  log_activity.init({
+  const log_activity = sequelize.define('log_activity', {
     log_date: {
       type: DataTypes.DATE
     },
@@ -48,8 +38,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT
     }
   }, {
-    sequelize,
-    modelName: 'log_activity',
-  });
+    tableName: 'log_activity',
+    timestamps: true
+  })
   return log_activity;
 };

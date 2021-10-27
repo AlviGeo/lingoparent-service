@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
-  const master_tutor = sequelize.define('master_tutor', {
+  const master_tutor = sequelize.define('Tutor', {
     id_course: {
       type: DataTypes.INTEGER
     },
@@ -39,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER
     },
   }, {
-    tableName: 'master_tutor',
+    tableName: 'master_tutors',
     timestamps: true
   });
   
