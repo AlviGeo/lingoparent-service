@@ -80,8 +80,18 @@ const register = async (req, res) => {
           status: 'error',
           message: 'email already exist'
       });
+      
   }
-
+  const checkRegister = v.compile(validator.register);
+    const check = checkRegister(
+      { 
+        email,
+        password
+      });
+      if(check) {
+        return errorResponse(req, res, {check})
+      }
+      
     const passHash = await bcrypt.hash(req.body.password, 10);
 
     // const token = jwt.sign({
