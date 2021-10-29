@@ -23,10 +23,11 @@ const passport = require('passport');
 const { response } = require("express");
 require("../../../config/passport");
 
+/*Register*/
 const register = async (req, res) => {
   try {
     const {
-      fullname,
+      firstname,
       lastname,
       email,
       password,
@@ -38,18 +39,14 @@ const register = async (req, res) => {
       photo
     } = req.body
 
+
+    /*Check Email*/
     const user = await User.findOne({
       where: {
         email: req.body.email
       },
     });
-    // if (user) {
-    //   throw new Error('User already exists with same email');
-    // } else if (email) {
-    //   throw new Error('User already exists with same email!');
-    // } else if (phone) {
-    //   throw new Error('User already exists with same phone number');
-    // }
+
     if(user){
       return res.status(409).json({
           status: 'error',
@@ -57,29 +54,30 @@ const register = async (req, res) => {
       });
       
   }
+
+  /*Validate Register Requirement*/
   const checkRegister = v.compile(validator.register);
     const check = checkRegister(
       { 
-        fullname: req.body.fullname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        password: req.body.password,
-        phone: req.body.phone,
-        role: req.body.role,
-        address: req.body.address,
-        gender: req.body.gender,
-        date_birth: req.body.date_birth,
-        photo: req.body.photo
+        firstname: firstname,
+        lastname: lastname,
+        email: email,
+        password: password,
+        phone: phone,
+        role: role,
+        address: address,
+        gender: gender,
+        date_birth: date_birth,
+        photo: photo
       });
-
-     console.log(check);
-    if(!check) { // tidak true
-      return errorResponse(req, res, {check}) //false
-    }else{
-      console.log("sini");
-    }
-      
     
+    /*Check Error at Validate*/  
+    const checkType = typeof(check);
+    if(checkType!="boolean") {
+      return errorResponse(req, res, {check})
+    } 
+    
+    /*Hash Password*/
     const passHash = await bcrypt.hash(req.body.password, 10);
 
     const token = jwt.sign({
@@ -90,41 +88,33 @@ const register = async (req, res) => {
       },
       process.env.SECRET,
     );
-
-    const dataUser = {
-      email: req.body.email,
-      password: passHash,
-      role: req.body.role,
-    };
     
-
-    // User.create(data, {
-    //   include: [{
-    //     model: db.Parent,
-    //     as: 'master_parent',
-    //     include: [db.fullname, db.lastname, db.phone, db.address, db.gender]
-    //   }]
-    // }).then(function() {
-    //   return successResponse(req, res, {data});
-    // })
+    /*Create Data User*/
+    const dataUser = {
+      email: email,
+      password: passHash,
+      role: role,
+    };
     
     const UserIN = await User.create(dataUser);
     
+    
+    /*Create Data Parent with Find Email*/
     const parent = await User.findOne({
       where: {
-        email: req.body.email
+        email: email
       },
     });
 
     const dataParent = {
-      fullname: req.body.fullname,
-      lastname: req.body.lastname,
-      phone: req.body.phone,
+      firstname: firstname,
+      lastname: lastname,
+      phone: phone,
       idUser_create: parent.id,
-      address: req.body.address,
-      gender: req.body.gender,
-      date_birth: req.body.date_birth,
-      photo: req.body.photo
+      address: address,
+      gender: gender,
+      date_birth: date_birth,
+      photo: photo
     };
     const ParentIN = await Parent.create(dataParent);
 

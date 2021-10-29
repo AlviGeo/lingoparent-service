@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     id_occupation: {
       type: DataTypes.INTEGER
     },
-    fullname: {
+    firstname: {
       type: DataTypes.STRING
     },
     lastname: {
