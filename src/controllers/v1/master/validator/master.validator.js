@@ -11,7 +11,7 @@ const register = {
     role: {type: "string", empty: false},
     address: {type: "string", empty: false},
     gender: {type: "string", empty: false},
-    date_birth: {type: "string", empty: false}, //problem check data date
+    date_birth: {type: "date", empty: false, convert:true}, //problem check data date
     photo: {type: "string", empty: false}, // problem when use text
 };
 
