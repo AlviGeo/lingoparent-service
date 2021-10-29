@@ -21,35 +21,43 @@ const validator = require("./validator/master.validator");
 // Passport JS //
 const passport = require('passport');
 const { response } = require("express");
+
 require("../../../config/passport");
+
 
 const register = async (req, res) => {
   try {
+
+    const register = {
+      email: {type: "email", empty: false},
+      password: {type: "string", empty: false, min: 6, max: 25},
+      firstname: {type: "string", empty: false},
+      lastname: {type: "string", empty: false},
+      phone: {type: "string", empty: false},
+      role: {type: "string", empty: false},
+      address: {type: "string", empty: false},
+      gender: {type: "string", empty: false},
+      date_birth: {type: "string", empty: false}, //problem check data date
+      photo: {type: "string", empty: false}, // problem when use text
+    };
+    const validate = v.validate(req.body, register)
+
+    // Message validate
+    if(validate.length) {
+      return errorResponse(req, res, {validate})
+    }
+  
     const {
-      fullname,
-      lastname,
       email,
-      password,
-      phone,
-      role,
-      address,
-      gender,
-      date_birth,
-      photo
+      role
     } = req.body
 
+    // Check email exist or not
     const user = await User.findOne({
       where: {
-        email: req.body.email
+        email: email
       },
     });
-    // if (user) {
-    //   throw new Error('User already exists with same email');
-    // } else if (email) {
-    //   throw new Error('User already exists with same email!');
-    // } else if (phone) {
-    //   throw new Error('User already exists with same phone number');
-    // }
     if(user){
       return res.status(409).json({
           status: 'error',
@@ -57,67 +65,40 @@ const register = async (req, res) => {
       });
       
   }
-  const checkRegister = v.compile(validator.register);
-    const check = checkRegister(
-      { 
-        fullname: req.body.fullname,
-        lastname: req.body.lastname,
-        email: req.body.email,
-        password: req.body.password,
-        phone: req.body.phone,
-        role: req.body.role,
-        address: req.body.address,
-        gender: req.body.gender,
-        date_birth: req.body.date_birth,
-        photo: req.body.photo
-      });
-
-     console.log(check);
-    if(!check) { // tidak true
-      return errorResponse(req, res, {check}) //false
-    }else{
-      console.log("sini");
-    }
-      
-    
+    // Hash password
     const passHash = await bcrypt.hash(req.body.password, 10);
 
+    // Create token
     const token = jwt.sign({
         user: {
-          email: req.body.email,
-          password: req.body.passport
+          email: email,
+          password: passport
         },
       },
       process.env.SECRET,
     );
 
+    // User data for register
     const dataUser = {
-      email: req.body.email,
+      email: email,
       password: passHash,
-      role: req.body.role,
+      role: role,
+      token
     };
     
-
-    // User.create(data, {
-    //   include: [{
-    //     model: db.Parent,
-    //     as: 'master_parent',
-    //     include: [db.fullname, db.lastname, db.phone, db.address, db.gender]
-    //   }]
-    // }).then(function() {
-    //   return successResponse(req, res, {data});
-    // })
-    
+    // Insert data into table user
     const UserIN = await User.create(dataUser);
     
+    // Find parent email
     const parent = await User.findOne({
       where: {
-        email: req.body.email
+        email: email
       },
     });
 
+    // Parent data for register
     const dataParent = {
-      fullname: req.body.fullname,
+      firstname: req.body.firstname,
       lastname: req.body.lastname,
       phone: req.body.phone,
       idUser_create: parent.id,
@@ -126,8 +107,9 @@ const register = async (req, res) => {
       date_birth: req.body.date_birth,
       photo: req.body.photo
     };
-    const ParentIN = await Parent.create(dataParent);
 
+    // Insert data into table user
+    const ParentIN = await Parent.create(dataParent);
     return successResponse(req, res, {UserIN, ParentIN});
 
   } catch (err) {

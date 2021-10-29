@@ -1,24 +1,29 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) => {
-  const master_parent = sequelize.define('master_parent', {
+  const master_parent = sequelize.define('Parent', {
     id_occupation: {
       type: DataTypes.INTEGER
     },
-    fullname: {
-      type: DataTypes.STRING
+    firstname: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
     lastname: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false
     },
-    phone: {
-      type: DataTypes.STRING
+    phone: { 
+      type: DataTypes.STRING,
+      allowNull: false
     },
     address: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false
     },
     gender: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false
     },
     date_birth: {
       type: DataTypes.DATE

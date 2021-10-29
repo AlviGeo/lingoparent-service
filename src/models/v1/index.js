@@ -37,18 +37,36 @@ db.Sequelize = Sequelize;
 
 
 db.master_user = require("./master_user.js")(sequelize, Sequelize)
-// db.master_student = require("./master_student.js")(sequelize, Sequelize);
+db.master_student = require("./master_student.js")(sequelize, Sequelize);
 db.master_parent = require("./master_parent.js")(sequelize, Sequelize);
+db.master_tutor = require("./master_tutor")(sequelize, Sequelize)
 
+db.master_user.hasOne(db.master_student, {
+  foreignKey: 'idUser_create',
+  targetKey: 'id'
+})
 db.master_user.hasOne(db.master_parent, {
   foreignKey: 'idUser_create',
   targetKey: 'id'
 })
+db.master_user.hasOne(db.master_tutor, {
+  foreignKey: 'idUser_create',
+  targetKey: 'id'
+})
+
 db.master_parent.belongsTo(db.master_user, {
     foreignKey: 'idUser_create',
     targetKey: 'id'
 })
 
+db.master_student.belongsTo(db.master_user, {
+  foreignKey: 'idUser_create',
+  targetKey: 'id'
+})
+db.master_tutor.belongsTo(db.master_user, {
+  foreignKey: 'idUser_create',
+  targetKey: 'id'
+})
 
 
 
