@@ -12,6 +12,7 @@ const bcrypt = require("bcrypt");
 const db = require("../../../models/v1")
 const User = db.master_user;
 const Parent = db.master_parent;
+const Students = db.master_student;
 
 // Validator //
 const Validator = require("fastest-validator");
@@ -23,7 +24,6 @@ const passport = require('passport');
 const { response } = require("express");
 
 require("../../../config/passport");
-
 
 const register = async (req, res) => {
   try {
@@ -48,6 +48,8 @@ const register = async (req, res) => {
     }
   
     const {
+      firstname,
+      lastname,
       email,
       role
     } = req.body
@@ -62,10 +64,32 @@ const register = async (req, res) => {
       return res.status(409).json({
           status: 'error',
           message: 'email already exist'
+      }); 
+    }
+
+    /*Validate Register Requirement*/
+    const checkRegister = v.compile(validator.register);
+    const check = checkRegister(
+      { 
+        firstname: firstname,
+        lastname: lastname,
+        email: email,
+        password: password,
+        phone: phone,
+        role: role,
+        address: address,
+        gender: gender,
+        date_birth: date_birth,
+        photo: photo
       });
-      
-  }
-    // Hash password
+    
+    /*Check Error at Validate*/  
+    const checkType = typeof(check);
+    if(checkType!="boolean") {
+      return errorResponse(req, res, {check})
+    } 
+    
+    /*Hash Password*/
     const passHash = await bcrypt.hash(req.body.password, 10);
 
     // Create token
@@ -83,35 +107,67 @@ const register = async (req, res) => {
       email: email,
       password: passHash,
       role: role,
-      token
     };
     
-    // Insert data into table user
     const UserIN = await User.create(dataUser);
     
-    // Find parent email
-    const parent = await User.findOne({
-      where: {
-        email: email
-      },
-    });
+    /* Create DB with Checking Role */
+    switch (role){
+			case "students":
+				
+        console.log("masuk students");
+        /*Create Data Students with Find Email*/
+        const students = await User.findOne({
+          where: {
+            email: email
+          },
+        });
 
-    // Parent data for register
-    const dataParent = {
-      firstname: req.body.firstname,
-      lastname: req.body.lastname,
-      phone: req.body.phone,
-      idUser_create: parent.id,
-      address: req.body.address,
-      gender: req.body.gender,
-      date_birth: req.body.date_birth,
-      photo: req.body.photo
-    };
+        const dataStudents = {
+          firstname: firstname,
+          lastname: lastname,
+          phone: phone,
+          idUser_create: students.id,
+          address: address,
+          gender: gender,
+          date_birth: date_birth,
+          photo: photo
+        };
+        const StudentsIN = await Students.create(dataStudents);
 
-    // Insert data into table user
-    const ParentIN = await Parent.create(dataParent);
-    return successResponse(req, res, {UserIN, ParentIN});
+        return successResponse(req, res, {UserIN, StudentsIN});
 
+			case "parent":
+        
+        console.log("masuk parent");
+				/*Create Data Parent with Find Email*/
+        const parent = await User.findOne({
+          where: {
+            email: email
+          },
+        });
+
+        const dataParent = {
+          firstname: firstname,
+          lastname: lastname,
+          phone: phone,
+          idUser_create: parent.id,
+          address: address,
+          gender: gender,
+          date_birth: date_birth,
+          photo: photo
+        };
+        const ParentIN = await Parent.create(dataParent);
+
+        return successResponse(req, res, {UserIN, ParentIN});
+
+			default:
+			  return res.status(409).json({
+          status: 'error',
+          message: "role dosen\'t exist"
+      });
+		}
+    
   } catch (err) {
     return errorResponse(req, res, {
       err
