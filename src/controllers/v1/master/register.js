@@ -1,11 +1,11 @@
-// Response Message //
+// Response Message
 const {
   errorResponse,
   successResponse
 } = require("../../../helpers")
 const jwt = require("jsonwebtoken");
 
-// Bcrypt Password //
+// Bcrypt Password 
 const bcrypt = require("bcrypt");
 
 // Import model
@@ -19,12 +19,12 @@ const Validator = require("fastest-validator");
 const v = new Validator();
 const validator = require("./validator/master.validator");
 
-// Passport JS //
+// Passport JS (Not used yet)
 const passport = require('passport');
 const { response } = require("express");
 require("../../../config/passport");
 
-/*Register*/
+// Register
 const register = async (req, res) => {
   try {
     const {
@@ -40,7 +40,7 @@ const register = async (req, res) => {
       photo
     } = req.body
 
-    /*Check Email*/
+    // Check Email
     const user = await User.findOne({
       where: {
         email: req.body.email
@@ -52,7 +52,7 @@ const register = async (req, res) => {
     }
     
 
-    /*Validate Register Requirement*/
+    // Validate Register Requirement
     const checkRegister = v.compile(validator.register);
     const check = checkRegister(
       { 
@@ -68,13 +68,13 @@ const register = async (req, res) => {
         photo: photo
       });
     
-    /*Check Error at Validate*/  
+    // Check Error at Validate
     const checkType = typeof(check);
     if(checkType!="boolean") {
       return errorResponse(req, res, {check})
     } 
     
-    /*Hash Password*/
+    // Hash Password
     const passHash = await bcrypt.hash(req.body.password, 10);
     
 
@@ -87,24 +87,24 @@ const register = async (req, res) => {
       process.env.SECRET,
     );
     
-    /*Inisiate Data User*/
+    // Inisiate Data User
     const dataUser = {
       email: email,
       password: passHash,
       role: role,
     };
     
-    /*Check Role*/
+    // Check Role
     if(role=="parent" || role=="student"){
 
       /*Create Data User*/
       await User.create(dataUser);
 
-      /* Create DB with Checking Role */
+      // Create DB with Checking Role
       switch (role){
         case "student":
           
-          /*Create Data Student with Find Email*/
+          // Create Data Student with Find Email 
           const student = await User.findOne({
             where: {
               email: email
@@ -129,7 +129,7 @@ const register = async (req, res) => {
 
         case "parent":
           
-          /*Create Data Parent with Find Email*/
+          // Create Data Parent with Find Email
           const parent = await User.findOne({
             where: {
               email: email

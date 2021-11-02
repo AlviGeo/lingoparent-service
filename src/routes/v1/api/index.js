@@ -35,11 +35,15 @@ router.get('/failed', (req, res) => {
 router.post('/login', masterController.login)
 
 /* POST user logout. */
+router.post('/logout')
 
 /* PUT user password. */
+router.put('update-password')
 
 /* POST user forgot password. */
+router.post('/forgot-password')
 
 /* PUT user request reset password. */
+router.put('/passwordreset')
 
 module.exports = router;
