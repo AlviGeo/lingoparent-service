@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken");
 const db = require("../../../models/v1")
 const User = db.master_user;
 const Parent = db.master_parent;
+const Token = db.trx_access_token;
 
 // Validator //
 const Validator = require("fastest-validator");
@@ -16,47 +17,27 @@ const v = new Validator();
 
 const login = async (req, res) => {
     try {
+        const {email, password} = req.body;
         
-        const login = {
-            email: {
-                type: "email",
-                empty: false
-            },
-            password: {
-                type: "string",
-                min: 6,
-                empty: false
-            }
+        // Validate if user exist in DB
+        const user = await User.findOne({email});
+        if(user && (await bcrypt.compare(password, user.password))) {
+            // Create token
+            const token = jwt.sign({
+                id: user.id, 
+                email,
+            }, process.env.TOKEN_KEY,
+                {
+                    expiresIn: "2h",
+                }
+            );
+            // Save user token
+            await Token.create({
+                id_user: user.id,
+                access_token: token
+            });
+            return successResponse(req, res, 'User login success.')
         }
-
-        const validate = v.validate(req.body, login);
-
-        //Message Validate
-        if (validate.length) {
-            return errorResponse(req, res, {validate});
-        }
-
-        const user = await User.findOne({
-            where: {email: req.body.email}
-        })
-        if(!user) {
-            return errorResponse(req, res, 'Wrong email!')
-        }
-
-        const isValidPass = await bcrypt.compare(req.body.password, user.password)
-        if(!isValidPass){
-            return errorResponse(req, res, 'Wrong password!');
-        }
-
-        const data = await User.findOne({
-            where: { email: req.body.email}, 
-            attributes: ['id', 'name', 'email', 'role'],
-            include: {
-                model: Parent,
-                attributes: ['firstname', 'lastname', 'phone', 'idUser_create']
-            }
-        });
-        return successResponse(req, res, {data})
 
     } catch (err) {
         return errorResponse(req, res, {

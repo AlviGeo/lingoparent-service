@@ -22,44 +22,31 @@ const validator = require("./validator/master.validator");
 // Passport JS //
 const passport = require('passport');
 const { response } = require("express");
-
 require("../../../config/passport");
 
+/*Register*/
 const register = async (req, res) => {
   try {
-
-    const register = {
-      email: {type: "email", empty: false},
-      password: {type: "string", empty: false, min: 6, max: 25},
-      firstname: {type: "string", empty: false},
-      lastname: {type: "string", empty: false},
-      phone: {type: "string", empty: false},
-      role: {type: "string", empty: false},
-      address: {type: "string", empty: false},
-      gender: {type: "string", empty: false},
-      date_birth: {type: "string", empty: false}, //problem check data date
-      photo: {type: "string", empty: false}, // problem when use text
-    };
-    const validate = v.validate(req.body, register)
-
-    // Message validate
-    if(validate.length) {
-      return errorResponse(req, res, {validate})
-    }
-  
     const {
       firstname,
       lastname,
       email,
-      role
+      password,
+      phone,
+      role,
+      address,
+      gender,
+      date_birth,
+      photo
     } = req.body
 
-    // Check email exist or not
+    /*Check Email*/
     const user = await User.findOne({
       where: {
-        email: email
+        email: req.body.email
       },
     });
+
     if(user){
       return errorResponse(req, res, "email already exist");
     }
@@ -90,17 +77,16 @@ const register = async (req, res) => {
     /*Hash Password*/
     const passHash = await bcrypt.hash(req.body.password, 10);
 
-    // Create token
     const token = jwt.sign({
         user: {
-          email: email,
-          password: passport
+          email: req.body.email,
+          password: req.body.passport
         },
       },
       process.env.SECRET,
     );
-
-    // User data for register
+    
+    /*Inisiate Data User*/
     const dataUser = {
       email: email,
       password: passHash,
@@ -168,7 +154,7 @@ const register = async (req, res) => {
         message: "role dosen\'t exist"
       });
     }
-
+ 
   } catch (err) {
     return errorResponse(req, res, {
       err

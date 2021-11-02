@@ -1,7 +1,5 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   const trx_access_token = sequelize.define('trx_access_token', {
     id_user: {

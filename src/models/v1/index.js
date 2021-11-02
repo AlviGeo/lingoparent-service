@@ -40,6 +40,7 @@ db.master_user = require("./master_user.js")(sequelize, Sequelize)
 db.master_student = require("./master_student.js")(sequelize, Sequelize);
 db.master_parent = require("./master_parent.js")(sequelize, Sequelize);
 db.master_tutor = require("./master_tutor")(sequelize, Sequelize)
+db.trx_access_token = require("./trx_access_token")(sequelize, Sequelize);
 
 db.master_user.hasOne(db.master_student, {
   foreignKey: 'idUser_create',
@@ -51,6 +52,11 @@ db.master_user.hasOne(db.master_parent, {
 })
 db.master_user.hasOne(db.master_tutor, {
   foreignKey: 'idUser_create',
+  targetKey: 'id'
+})
+
+db.master_user.hasMany(db.trx_access_token, {
+  foreignKey: 'id_user',
   targetKey: 'id'
 })
 
@@ -68,6 +74,10 @@ db.master_tutor.belongsTo(db.master_user, {
   targetKey: 'id'
 })
 
+db.trx_access_token.hasOne(db.master_user, {
+  foreignKey: 'id_user',
+  targetKey: 'id'
+})
 
 
 module.exports = db;
