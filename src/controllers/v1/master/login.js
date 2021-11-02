@@ -16,7 +16,7 @@ const v = new Validator();
 
 const login = async (req, res) => {
     try {
-
+        
         const login = {
             email: {
                 type: "email",
@@ -64,5 +64,6 @@ const login = async (req, res) => {
         })
     }
 }
+
 
 module.exports = login;

@@ -12,7 +12,7 @@ const bcrypt = require("bcrypt");
 const db = require("../../../models/v1")
 const User = db.master_user;
 const Parent = db.master_parent;
-const Students = db.master_student;
+const Student = db.master_student;
 
 // Validator //
 const Validator = require("fastest-validator");
@@ -61,11 +61,9 @@ const register = async (req, res) => {
       },
     });
     if(user){
-      return res.status(409).json({
-          status: 'error',
-          message: 'email already exist'
-      }); 
+      return errorResponse(req, res, "email already exist");
     }
+    
 
     /*Validate Register Requirement*/
     const checkRegister = v.compile(validator.register);
@@ -109,65 +107,68 @@ const register = async (req, res) => {
       role: role,
     };
     
-    const UserIN = await User.create(dataUser);
-    
-    /* Create DB with Checking Role */
-    switch (role){
-			case "students":
-				
-        console.log("masuk students");
-        /*Create Data Students with Find Email*/
-        const students = await User.findOne({
-          where: {
-            email: email
-          },
-        });
+    /*Check Role*/
+    if(role=="parent" || role=="student"){
 
-        const dataStudents = {
-          firstname: firstname,
-          lastname: lastname,
-          phone: phone,
-          idUser_create: students.id,
-          address: address,
-          gender: gender,
-          date_birth: date_birth,
-          photo: photo
-        };
-        const StudentsIN = await Students.create(dataStudents);
+      /*Create Data User*/
+      await User.create(dataUser);
 
-        return successResponse(req, res, {UserIN, StudentsIN});
+      /* Create DB with Checking Role */
+      switch (role){
+        case "student":
+          
+          /*Create Data Student with Find Email*/
+          const student = await User.findOne({
+            where: {
+              email: email
+            },
+          });
 
-			case "parent":
-        
-        console.log("masuk parent");
-				/*Create Data Parent with Find Email*/
-        const parent = await User.findOne({
-          where: {
-            email: email
-          },
-        });
+          const dataStudent = {
+            firstname: firstname,
+            lastname: lastname,
+            phone: phone,
+            idUser_create: student.id,
+            address: address,
+            gender: gender,
+            date_birth: date_birth,
+            photo: photo
+          };
+          await Student.create(dataStudent);
 
-        const dataParent = {
-          firstname: firstname,
-          lastname: lastname,
-          phone: phone,
-          idUser_create: parent.id,
-          address: address,
-          gender: gender,
-          date_birth: date_birth,
-          photo: photo
-        };
-        const ParentIN = await Parent.create(dataParent);
+          return successResponse(req, res, "Student Successfully Created");
 
-        return successResponse(req, res, {UserIN, ParentIN});
+        case "parent":
+          
+          /*Create Data Parent with Find Email*/
+          const parent = await User.findOne({
+            where: {
+              email: email
+            },
+          });
 
-			default:
-			  return res.status(409).json({
-          status: 'error',
-          message: "role dosen\'t exist"
+          const dataParent = {
+            firstname: firstname,
+            lastname: lastname,
+            phone: phone,
+            idUser_create: parent.id,
+            address: address,
+            gender: gender,
+            date_birth: date_birth,
+            photo: photo
+          };
+          await Parent.create(dataParent);
+
+          return successResponse(req, res,  "Parent Successfully Created");
+
+      }
+    }else{
+      return res.status(409).json({
+        status: 'error',
+        message: "role dosen\'t exist"
       });
-		}
-    
+    }
+
   } catch (err) {
     return errorResponse(req, res, {
       err
