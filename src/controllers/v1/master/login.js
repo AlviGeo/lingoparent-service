@@ -1,20 +1,19 @@
-// Response Message //
+// Response Message
 const {
     errorResponse,
     successResponse
 } = require("../../../helpers");
 const jwt = require("jsonwebtoken");
 
-// Bcrypt Password //
+// Bcrypt Password 
 const bcrypt = require("bcrypt");
 
 // Import model
 const db = require("../../../models/v1")
 const User = db.master_user;
-const Parent = db.master_parent;
 const Token = db.trx_access_token;
 
-// Validator //
+// Validator 
 const Validator = require("fastest-validator");
 const v = new Validator();
 const validator = require("./validator/master.validator");
@@ -26,14 +25,14 @@ const login = async (req, res) => {
             password
         } = req.body;
 
-        /*Validate Login Requirement*/
+        // Validate Login Requirement
         const checkLogin = v.compile(validator.login);
         const check = checkLogin({
             email: email,
             password: password,
         })
 
-        /*Check Error at Validate*/
+        // Check Error at Validate 
         const checkType = typeof (check);
         if (checkType != "boolean") {
             return errorResponse(req, res, {
@@ -72,7 +71,7 @@ const login = async (req, res) => {
             }
         );
 
-        // 
+        // Store data and insert to DB
         dataToken = {
             id_user: user.id,
             access_token: token,

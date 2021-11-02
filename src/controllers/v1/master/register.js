@@ -21,7 +21,6 @@ const validator = require("./validator/master.validator");
 
 // Passport JS (Not used yet)
 const passport = require('passport');
-const { response } = require("express");
 require("../../../config/passport");
 
 // Register
@@ -43,7 +42,7 @@ const register = async (req, res) => {
     // Check Email
     const user = await User.findOne({
       where: {
-        email: req.body.email
+        email: email
       },
     });
 
@@ -51,7 +50,6 @@ const register = async (req, res) => {
       return errorResponse(req, res, "email already exist");
     }
     
-
     // Validate Register Requirement
     const checkRegister = v.compile(validator.register);
     const check = checkRegister(
@@ -76,16 +74,6 @@ const register = async (req, res) => {
     
     // Hash Password
     const passHash = await bcrypt.hash(req.body.password, 10);
-    
-
-    const token = jwt.sign({
-        user: {
-          email: req.body.email,
-          password: req.body.passport
-        },
-      },
-      process.env.SECRET,
-    );
     
     // Inisiate Data User
     const dataUser = {
