@@ -74,7 +74,7 @@ db.master_tutor.belongsTo(db.master_user, {
   targetKey: 'id'
 })
 
-db.trx_access_token.hasOne(db.master_user, {
+db.trx_access_token.belongsTo(db.master_user, {
   foreignKey: 'id_user',
   targetKey: 'id'
 })

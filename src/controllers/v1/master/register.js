@@ -76,6 +76,7 @@ const register = async (req, res) => {
     
     /*Hash Password*/
     const passHash = await bcrypt.hash(req.body.password, 10);
+    
 
     const token = jwt.sign({
         user: {
@@ -115,6 +116,8 @@ const register = async (req, res) => {
             lastname: lastname,
             phone: phone,
             idUser_create: student.id,
+            idUser_update: student.id,
+            address: address,
             address: address,
             gender: gender,
             date_birth: date_birth,
@@ -138,6 +141,8 @@ const register = async (req, res) => {
             lastname: lastname,
             phone: phone,
             idUser_create: parent.id,
+            idUser_update: parent.id,
+            address: address,
             address: address,
             gender: gender,
             date_birth: date_birth,

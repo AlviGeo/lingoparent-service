@@ -17,10 +17,22 @@ const v = new Validator();
 
 const login = async (req, res) => {
     try {
-        const {email, password} = req.body;
+        const {
+            email, 
+            password
+        } = req.body;
         
         // Validate if user exist in DB
-        const user = await User.findOne({email});
+        const user = await User.findOne(
+            {
+                email: email
+            });
+        if(!user){
+            return res.status(404).json({
+                status: 'error',
+                message: 'Wrong email or password'
+            });
+        }
         if(user && (await bcrypt.compare(password, user.password))) {
             // Create token
             const token = jwt.sign({
